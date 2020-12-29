@@ -1,0 +1,26 @@
+Once you have completed your solution for each problem, perform a run time analysis (Worst Case Big-O Notation) of your solution. Document this for each problem and include this in your submission. 
+
+
+------------------
+Task 0:
+find first record:  O(1)
+find last record:  O(1)
+
+
+------------------
+Task 1:
+O(n)
+
+------------------
+Task 2:
+O(n)
+
+------------------
+Task 3:
+Part A: O(n)
+Part B: O(n)
+
+
+------------------
+Task 4:
+O(n)
