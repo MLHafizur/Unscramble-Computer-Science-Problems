@@ -20,24 +20,17 @@ Print messages:
 "Last record of calls, <incoming number> calls <answering number> at time <time>, lasting <during> seconds"
 """
 
-firstRecord = texts[0]
-incomingNumber1 = firstRecord[0]
-answeringNumber1 = firstRecord[1]
-startTimestamp1 = firstRecord[2]
+def get_first_record(record_list):
+    first_record = record_list[0]
+    return first_record
 
-# ---------------------------------------
-lastRecord = calls[-1]
-incomingNumber2 = lastRecord[0]
-answeringNumber2 = lastRecord[1]
-startTimestamp2 = lastRecord[2]
-length = lastRecord[3]
+def get_last_record(record_list):
+    last_record = record_list[0]
+    return last_record
 
 
-# print(firstRecord)
-print(
-    f"First record of texts, {incomingNumber1} texts {answeringNumber1} at time {startTimestamp1}")
+print('First record of texts, {} texts {} at time {}'
+      .format(*get_first_record(texts)))
 
-
-# print(lastRecord)
-print(
-    f"Last record of calls, {incomingNumber2} calls {answeringNumber2} at time {startTimestamp2}, lasting {length} seconds")
+print('Last record of calls, {} calls {} at time {}, lasting {} seconds'
+      .format(*get_last_record(calls)))
