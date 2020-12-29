@@ -44,84 +44,65 @@ to other fixed lines in Bangalore."
 The percentage should have 2 decimal digits
 """
 
-def classifyNumber(phoneNum):
-    phoneNumType = None
-    areaCode = None
-    prefix = None
+def get_bangalore_codes(record_list):
 
-    startNums = ("7", "8", "9")
-    TelemarketerAreaCode = "140"
+    # patterns matching diffrent number types
+    fixed_pattern = re.compile(r'^\((\d+?)\)')
+    mobile_pattern = re.compile(r'^([789]\d{3})')
+    tele_pattern = re.compile(r'(^140)')
 
-    if(phoneNum.startswith("(0")):
-        phoneNumType = "Fixed"
-        areaCode = phoneNum[1:phoneNum.find(")")]
-    elif(phoneNum.find(" ") == 5 and phoneNum.startswith(startNums)):
-        phoneNumType = "Mobile"
-        prefix = phoneNum[0:4]
-    elif (phoneNum.startswith(TelemarketerAreaCode)):
-        phoneNumType = "Telemarketer"
-        areaCode = TelemarketerAreaCode
+    code_list = []
+    for record in record_list:
+        caller, reciever = record[0].strip(), record[1].strip()
+        if is_bangalore(caller):
+            if is_fixed(reciever):
+                reciever_code = get_reciever_code(fixed_pattern, reciever)
+                code_list.append(reciever_code)
+            elif is_mobile(reciever):
+                reciever_code = get_reciever_code(mobile_pattern, reciever)
+                code_list.append(reciever_code)
+            elif is_telemarketer(reciever):
+                reciever_code = get_reciever_code(tele_pattern, reciever)
+                code_list.append(reciever_code)
+            else:
+                raise Exception('Unknown reciever number format', reciever)
+        else:
+            continue
 
-    return {"phoneNumType": phoneNumType, "areaCode": areaCode, "prefix": prefix}
+    return sorted(set(code_list))
 
+def is_bangalore(number):
+    return number.startswith('(080)')
 
-# ------------------------------------------------------
-callsMadeFromBangalore = []
-bangaloreAreaCode = "(080)"
+def is_fixed(number):
+    return number.startswith('(')
 
+def is_mobile(number):
+    return re.match(r'^[789]', number)
 
-"""
-Part A: 
-"""
-phoneNumberCodes = []
+def is_telemarketer(number):
+    return number.startswith('140')
 
-for record in calls:
-    # Fixed line numbers phone number of people in Bangalore which starts with (080)
-    outgoingNumber = record[0]
-    recievingNumber = record[1]
-
-    if(outgoingNumber.startswith(bangaloreAreaCode)):
-        callsMadeFromBangalore.append(record)
-        numData = classifyNumber(recievingNumber)
-        code = numData['areaCode'] if numData['areaCode'] != None else numData['prefix']
-        if code not in phoneNumberCodes:
-            phoneNumberCodes.append(code)
-
-    """ 
-    Find all of the area codes and mobile prefixes called by people in Bangalore.
-    The prefix of a mobile number is its first four digits, and they always start with 7, 8 or 9.
-    """
-
-    timestamp = record[2]
-    callDuration = record[3]
+def get_reciever_code(pattern, number):
+    return pattern.match(number).group(1)
 
 
-print("The numbers called by people in Bangalore have codes:")
-print(*sorted(phoneNumberCodes), sep='\n')
+def get_bangalore_call_ratio(record_list):
 
-# print(callsMadeFromBangalore)
+    bangalore_caller = 0
+    bangalore_reciever = 0
+    for record in record_list:
+        caller, reciever = record[0].strip(), record[1].strip()
+        if is_bangalore(caller):
+            bangalore_caller +=1
+            if is_bangalore(reciever):
+                bangalore_reciever +=1
 
+    return bangalore_reciever / bangalore_caller * 100
 
-"""
-Part B: 
-percentage formula: y/x = P%
-What percent of callsMadeFromBangalore is countRecords?
-y is countRecords
-x is len(callsMadeFromBangalore), 
-"""
+print('he numbers called by people in Bangalore have codes:\n',
+      get_bangalore_codes(texts + calls))
 
-countRecords = 0
-for record in callsMadeFromBangalore:
-    recievingNumber = record[1]
-    if(recievingNumber.startswith(bangaloreAreaCode)):
-        countRecords += 1
-
-y = countRecords
-x = len(callsMadeFromBangalore)
-p = y/x
-
-# Converting decimal to a percent: p * 100 = ?%
-percentage = p * 100
-# print(percentage)
-
-print(f"{format(percentage,'.2f')} percent of calls from fixed lines in Bangalore are calls to other fixed lines in Bangalore.")
+print(('{:0.2f} percent of calls from fixed lines in Bangalore are calls '
+       'to other fixed lines in Bangalore.')
+       .format(get_bangalore_call_ratio(texts + calls)))
