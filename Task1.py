@@ -19,20 +19,11 @@ Print a message:
 "There are <count> different telephone numbers in the records."
 """
 
-phoneNumbers = set()
+def get_unique_numbers(record_list):
+    unique_numbers = []
+    for record in record_list:
+        unique_numbers.extend([record[0], record[1]])
+    return len(set(unique_numbers))
 
-for record in texts:
-    phoneNumbers.add(record[0])
-    phoneNumbers.add(record[1])
-
-for record in calls:
-    phoneNumbers.add(record[0])
-    phoneNumbers.add(record[1])
-
-
-#print(f"There are {len(text)} telephone numbers in the records.")
-#print(f"There are {len(calls)} telephone numbers in the records.")
-
-#print(*phoneNumbers, sep='\n')
-print(
-    f"There are {len(phoneNumbers)} different telephone numbers in the records.")
+print('There are {:d} different telephone numbers in the records.'
+      .format(get_unique_numbers(texts + calls)))
