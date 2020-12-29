@@ -25,38 +25,29 @@ Print a message:
 The list of numbers should be print out one per line in lexicographic order with no duplicates.
 """
 
-outgoingCalls = []
-recevingCalls = []
+def get_telemarketers(record_list):
+    text_num_list, caller_list, reciever_list = [], [], []
+    for record in record_list:
+        caller, reciever = record[0].strip(), record[1].strip()
+        if is_text(record):
+            text_num_list.extend([caller, reciever])
+        elif is_call(record):
+            caller_list.append(caller)
+            reciever_list.append(reciever)
+        else:
+            raise Exception('Type of the record not recognized')
 
-telemarketersCalls = []
+    telemarketer_set = (set(caller_list)
+                        - (set(reciever_list)
+                           | set(text_num_list)))
 
-for call in calls:
-    outgoingNumber = call[0]
-    receivingNumber = call[1]
+    return sorted(telemarketer_set)
 
-    if outgoingNumber not in outgoingCalls:
-        outgoingCalls.append(outgoingNumber)
-    
-    if receivingNumber not in recevingCalls:
-        recevingCalls.append(receivingNumber)
+def is_text(record):
+    return len(record) == 3
 
-outgoingTexts = []
-receivingTexts = []
+def is_call(record):
+    return len(record) == 4
 
-for text in texts:
-    outgoingNumber = text[0]
-    receivingNumber = text[1]
-
-    if outgoingNumber not in outgoingTexts:
-        outgoingTexts.append(outgoingNumber)
-    
-    if receivingNumber not in receivingTexts:
-        receivingTexts.append(receivingNumber)
-
-for cellNumber in outgoingCalls:
-    if((cellNumber not in recevingCalls) and (cellNumber not in outgoingTexts) and (cellNumber not in receivingTexts)):
-        telemarketersCalls.append(cellNumber)
-
-print("These numbers could be telemarketers: ")
-print(*sorted(telemarketersCalls), sep='\n')
-# print(len(telemarketersCallslist))
+print('These numbers could be telemarketers:\n',
+      get_telemarketers(texts + calls))
