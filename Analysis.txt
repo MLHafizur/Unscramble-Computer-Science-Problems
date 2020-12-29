@@ -3,8 +3,8 @@ Once you have completed your solution for each problem, perform a run time analy
 
 ------------------
 Task 0:
-find first record:  O(1)
-find last record:  O(1)
+
+O(1)
 
 
 ------------------
@@ -17,8 +17,8 @@ O(n)
 
 ------------------
 Task 3:
-Part A: O(n)
-Part B: O(n)
+
+O(n)
 
 
 ------------------
