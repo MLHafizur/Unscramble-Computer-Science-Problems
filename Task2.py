@@ -21,58 +21,17 @@ Print a message:
 September 2016.".
 """
 
-def getCallsByMonthYear(phoneCall, month, year):
+def get_longest_call(record_list):
+    record_dict = defaultdict(int)
+    for record in record_list:
+        num1, num2, duration = record[0], record[1], record[3]
+        record_dict[num1] += int(duration)
+        record_dict[num2] += int(duration)
 
-    timestamp = phoneCall[2]
-    dt = datetime.strptime(timestamp, '%d-%m-%Y %H:%M:%S')
-    if(dt.year == year and dt.month == month):
-        return True
-    else:
-        return False
+    number = max(record_dict, key=record_dict.get)
+    duration = record_dict[number]
 
+    return number, duration
 
-"""
-Add up the duration of all calls made
-Save the data in a dictionary
-"""
-
-
-def trackCallDuration(dictionary, phoneNumber, callDuration):
-    if(dictionary.get(phoneNumber) == None):
-        dictionary[phoneNumber] = callDuration
-    else:
-        dictionary[phoneNumber] = int(
-            dictionary.get(phoneNumber)) + int(callDuration)
-    return dictionary
-
-
-"""
-Get all the phone calls made during September 2016
-"""
-records = filter(lambda x: getCallsByMonthYear(x, 9, 2016), calls)
-
-
-"""
-Track the duraction of the september calls that were made
-"""
-dictionary = {}
-for record in records:
-    outgoingNumber = record[0]
-    recievingNumber = record[1]
-    timestamp = record[2]
-    callDuration = record[3]
-
-    dictionary = trackCallDuration(dictionary, outgoingNumber, callDuration)
-    dictionary = trackCallDuration(dictionary, recievingNumber, callDuration)
-
-
-"""
-Get the details for the phone number that spent the longest time spent on the phone during september 2016
-"""
-phoneMax = max(dictionary.items(), key=lambda x: int(x[1]))
-
-
-# print(len(list(records)))
-# print(phoneMax);
-
-print(f"{phoneMax[0]} spent the longest time, {phoneMax[1]} seconds, on the phone during September 2016.")
+print(('{} spent the longest time, {} seconds, on the phone '
+       'during September 2016.'.format(*get_longest_call(calls))))
